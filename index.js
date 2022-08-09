@@ -1,6 +1,10 @@
 const express = require('express');
 const cors = require("cors");
+
 const { MongoClient, ServerApiVersion, Db } = require("mongodb");
+
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+
 // const ObjectId = require('mongodb').ObjectId;
 require("dotenv").config();
 
@@ -36,13 +40,13 @@ async function run() {
     const mongodb = client.db("pockie");
     const productCollection = mongodb.collection("product");
 
-
     app.get("/product", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const products = await cursor.toArray();
       res.json(products);
     });
+
 
     // app.get("/searchProduct/:productName", async (req, res) =>{
     //   const searchProduct =req.params.productName;
@@ -93,20 +97,6 @@ async function run() {
     // const cursor = productCollection.deleteMany(query);
     // res.json( "delete Successful");
     // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   } catch (error) {
