@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require("cors");
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion, Db } = require("mongodb");
 // const ObjectId = require('mongodb').ObjectId;
 require("dotenv").config();
 
@@ -19,12 +19,23 @@ const client = new MongoClient(uri, {
 });
 
 
+
+// db.cities.createIndex(
+//   { city: 1 },
+//   { 
+//     collation: {
+//       locale: 'en',
+//       strength: 2
+//     }
+//   }
+// );
+
 async function run() {
   try {
     await client.connect();
     const mongodb = client.db("pockie");
     const productCollection = mongodb.collection("product");
-   
+
 
     app.get("/product", async (req, res) => {
       const query = {};
@@ -33,7 +44,70 @@ async function run() {
       res.json(products);
     });
 
+    // app.get("/searchProduct/:productName", async (req, res) =>{
+    //   const searchProduct =req.params.productName;
+    //   const cursor = productCollection.find(
+    //     { $text: {$category: 'technology'}}
+    //   );
+    //   const products = await cursor.toArray();
+    //   res.json(products);
+    // })
+
+    app.get("/product/:id", async (req, res) => {
+      const technology = req.params.id;
+      const query = { category:  /^technology$/i };
+
+      const cursor = productCollection.find(query);
+      const product = await cursor.toArray();
+      res.json(product);
+    });
+    app.get("/product/subCategory/:id", async (req, res) => {
+      const subCategory = req.params.id;
+      const query = { subCategory: subCategory };
+      const cursor = productCollection.find(query);
+      const product = await cursor.toArray();
+      res.json(product);
+    });
+    app.get("/product/brand/:id", async (req, res) => {
+      const brand = req.params.id;
+      const cursor = productCollection.find({brand});
+      const product = await cursor.toArray();
+      res.json(product);
+    });
+    app.get("/just", async (req, res) => {
+      const subCategory = req.query.subCategory;
+      const brand = req.query.brand;
+      const cursor = productCollection.find({brand,subCategory});
+      const product = await cursor.toArray();
+      res.json(product);
+    });
     
+   
+
+
+    // app.delete("/product/:id", async (req, res) =>{
+    //   const category = req.params.id;
+    //   const query = { category : category };
+
+
+    // const cursor = productCollection.deleteMany(query);
+    // res.json( "delete Successful");
+    // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   } catch (error) {
     console.log(error);
