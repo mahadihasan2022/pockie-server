@@ -1,10 +1,6 @@
 const express = require('express');
 const cors = require("cors");
-
 const { MongoClient, ServerApiVersion, Db } = require("mongodb");
-
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-
 // const ObjectId = require('mongodb').ObjectId;
 require("dotenv").config();
 
@@ -40,13 +36,13 @@ async function run() {
     const mongodb = client.db("pockie");
     const productCollection = mongodb.collection("product");
 
+
     app.get("/product", async (req, res) => {
       const query = {};
       const cursor = productCollection.find(query);
       const products = await cursor.toArray();
       res.json(products);
     });
-
 
     // app.get("/searchProduct/:productName", async (req, res) =>{
     //   const searchProduct =req.params.productName;
@@ -57,9 +53,17 @@ async function run() {
     //   res.json(products);
     // })
 
+    // app.get("/product/:id", async (req, res) => {
+    //   const technology = req.params.id;
+    //   const query = { category:  /^technology$/i };
+
+    //   const cursor = productCollection.find(query);
+    //   const product = await cursor.toArray();
+    //   res.json(product);
+    // });
     app.get("/product/:id", async (req, res) => {
-      const technology = req.params.id;
-      const query = { category:  /^technology$/i };
+      const category = req.params.id;
+      const query = { category: category };
 
       const cursor = productCollection.find(query);
       const product = await cursor.toArray();
@@ -75,6 +79,12 @@ async function run() {
     app.get("/product/brand/:id", async (req, res) => {
       const brand = req.params.id;
       const cursor = productCollection.find({brand});
+      const product = await cursor.toArray();
+      res.json(product);
+    });
+    app.get("/product/name/:id", async (req, res) => {
+      const name = req.params.id;
+      const cursor = productCollection.find({name});
       const product = await cursor.toArray();
       res.json(product);
     });
@@ -97,6 +107,20 @@ async function run() {
     // const cursor = productCollection.deleteMany(query);
     // res.json( "delete Successful");
     // });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   } catch (error) {
