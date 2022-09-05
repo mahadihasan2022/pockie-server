@@ -35,6 +35,7 @@ async function run() {
     await client.connect();
     const mongodb = client.db("pockie");
     const productCollection = mongodb.collection("product");
+    const userCollection = mongodb.collection("user");
 
 
     app.get("/product", async (req, res) => {
@@ -96,6 +97,24 @@ async function run() {
       res.json(product);
     });
     
+
+    app.get("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = await userCollection.findOne(query);
+      res.send(user);
+    });
+    app.put("/user/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: user,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send({ result });
+    });
    
 
 
